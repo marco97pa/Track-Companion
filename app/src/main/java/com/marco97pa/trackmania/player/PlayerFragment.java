@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -23,8 +24,12 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.marco97pa.trackmania.BuildConfig;
 import com.marco97pa.trackmania.MainActivity;
 import com.marco97pa.trackmania.R;
@@ -43,6 +48,7 @@ public class PlayerFragment extends Fragment {
     private TextView nicknameText;
     private ImageView imageView;
     private TextView APIverText;
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -79,6 +85,27 @@ public class PlayerFragment extends Fragment {
         AdView mAdView = root.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setMinimumFetchIntervalInSeconds(3600)
+                .build();
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+        mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
+        mFirebaseRemoteConfig.fetchAndActivate()
+                .addOnCompleteListener(getActivity(), new OnCompleteListener<Boolean>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Boolean> task) {
+                        if (task.isSuccessful()) {
+                            boolean updated = task.getResult();
+                            Log.d(LOG_TAG, "Config params updated: " + updated);
+                            checkSupportedApi();
+                        } else {
+                            Log.d(LOG_TAG, "Config fetch failed");
+                        }
+                    }
+                });
+
 
         return root;
     }
@@ -139,12 +166,18 @@ public class PlayerFragment extends Fragment {
             //this method will be running on UI thread
             if(player != null) {
                 if(player.getNickname() != null) {
+
                     nicknameText.setText(player.getNickname());
+
                     Picasso.get()
                             .load(player.getImage())
                             .placeholder(R.drawable.ic_account_circle_black_24dp)
                             .into(imageView);
+
                     APIverText.setText(player.getApi_version());
+
+                    checkSupportedApi();
+
                 }
                 else{
                     ((MainActivity) getActivity()).requestLogin();
@@ -157,5 +190,16 @@ public class PlayerFragment extends Fragment {
 
     }
 
+    private void checkSupportedApi(){
+        String supported_api = mFirebaseRemoteConfig.getString("supported_api");
+        if(APIverText.getText().toString() != "" && supported_api != "none") {
+            if (APIverText.getText().toString().contains(supported_api)) {
+                APIverText.setTextColor(ContextCompat.getColor(getActivity(), R.color.green));
+                Log.d(LOG_TAG, "API version supported");
+            } else {
+                Log.w(LOG_TAG, "API version unsupported");
+            }
+        }
+    }
 
 }
