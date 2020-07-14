@@ -18,4 +18,5 @@
     <string name="error_network">Network error</string>
     <string name="beta_description">This app is actually in beta stage. More information like leaderboards, statistics and trophies will be a available in the next months. At the moment these data are not public. I\'m working hard on more features, so stay up to date with new app versions and report bugs if you encounter them (you can send them through the Profile section). Thanks for using this app.</string>
     <string name="beta_title">More incoming!</string>
+    <string name="easter_egg">You have found the easter egg!</string>
 </resources>

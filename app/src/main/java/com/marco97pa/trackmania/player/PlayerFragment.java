@@ -1,6 +1,9 @@
 package com.marco97pa.trackmania.player;
 
+import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -49,6 +53,7 @@ public class PlayerFragment extends Fragment {
     private ImageView imageView;
     private TextView APIverText;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
+    int taps = 0;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -106,6 +111,21 @@ public class PlayerFragment extends Fragment {
                     }
                 });
 
+        //Sets version name easter egg
+        LinearLayout APPver = (LinearLayout) root.findViewById(R.id.app_ver_layout);
+        APPver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                        if (taps == 7) {
+                            Toast.makeText(getActivity(), getString(R.string.easter_egg), Toast.LENGTH_LONG).show();
+                            watchYoutubeVideo(getActivity(), "X11cciTgwiM");
+                            taps = 0;
+                        }
+
+                        taps++;
+                    }
+                });
 
         return root;
     }
@@ -202,4 +222,14 @@ public class PlayerFragment extends Fragment {
         }
     }
 
+    private static void watchYoutubeVideo(Context context, String id) {
+        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
+        Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://www.youtube.com/watch?v=" + id));
+        try {
+            context.startActivity(appIntent);
+        } catch (ActivityNotFoundException ex) {
+            context.startActivity(webIntent);
+        }
+    }
 }
