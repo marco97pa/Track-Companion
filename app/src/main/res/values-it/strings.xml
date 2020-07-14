@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Track Companion</string>
+    <string name="title_maps">Tracciati</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_player">Profilo</string>
+    <string name="title_activity_map_details">Dettagli tracciato</string>
+    <string name="action_settings">Impostazioni</string>
+    <string name="bronze">Bronzo</string>
+    <string name="silver">Argento</string>
+    <string name="gold">Oro</string>
+    <string name="author">Autore</string>
+    <string name="bug_report">Segnala un bug</string>
+    <string name="app_version">Versione app</string>
+    <string name="no_network">Nessuna connessione a Internet disponibile</string>
+    <string name="log_in_success">Log in completato!</string>
+    <string name="api_version">Versione API</string>
+    <string name="no_maps_data">Non hai ancora realizzato nessun tracciato</string>
+    <string name="error_network">Errore di rete</string>
+    <string name="beta_description">Questa app è attualmente in fase beta. Altre informazioni come i record sulle piste, le statistiche, i club e i trofei saranno disponibili nei prossimi mesi. Al momento questi dati non sono pubblici. Sto lavorando su nuove funzionalità, quindi resta aggiornato sulle nuove versioni dell\'app e segnala i bug che dovessi incontrare dalla sezione Profilo. Grazie per utilizzare questa app.</string>
+    <string name="beta_title">Nuove funzionalità presto in arrivo!</string>
+    <string name="easter_egg">Hai trovato l\'easter egg!</string>
+</resources>
