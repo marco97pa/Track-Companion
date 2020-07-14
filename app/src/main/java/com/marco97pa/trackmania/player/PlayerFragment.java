@@ -185,7 +185,7 @@ public class PlayerFragment extends Fragment {
 
             //this method will be running on UI thread
             if(player != null) {
-                if(player.getNickname() != null) {
+                if(player.getNickname() != null && player.getImage() != null) {
 
                     nicknameText.setText(player.getNickname());
 
@@ -212,7 +212,9 @@ public class PlayerFragment extends Fragment {
 
     private void checkSupportedApi(){
         String supported_api = mFirebaseRemoteConfig.getString("supported_api");
-        if(APIverText.getText().toString() != "" && supported_api != "none") {
+        if(APIverText.getText().toString() != "" && supported_api != "none" && supported_api != "") {
+            Log.d(LOG_TAG, "Supported API (from Firebase): " + supported_api);
+            Log.d(LOG_TAG, "Actual API (from Ubisoft): " + APIverText.getText().toString());
             if (APIverText.getText().toString().contains(supported_api)) {
                 APIverText.setTextColor(ContextCompat.getColor(getActivity(), R.color.green));
                 Log.d(LOG_TAG, "API version supported");
