@@ -74,7 +74,9 @@ public class MapDetailsActivity extends AppCompatActivity {
         textBronze = (TextView) findViewById(R.id.bronze);
 
         toolbarLayout.setTitle(bundle.getString("map_title"));
-        Picasso.get().load(bundle.getString("map_image")).into(image);
+        if(!bundle.getString("map_image").isEmpty()) {
+            Picasso.get().load(bundle.getString("map_image")).into(image);
+        }
         new DecodeGBXTask().execute(bundle.getString("cookie"), bundle.getString("map_url"));
     }
 

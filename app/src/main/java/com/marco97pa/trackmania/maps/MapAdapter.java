@@ -77,8 +77,12 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.ViewHolder> {
         TextView textView = holder.titleTextView;
         textView.setText(maps.getTitle());
         ImageView image = holder.imageView;
-        Picasso.get().load(maps.getImage()).into(image);
-
+        if(maps.getImage().isEmpty()) {
+            image.setImageResource(R.drawable.track);
+            //image.setBackgroundResource(R.drawable.progressgreen);
+        }else {
+            Picasso.get().load(maps.getImage()).into(image);
+        }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
