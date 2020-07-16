@@ -20,4 +20,8 @@
     <string name="beta_description">Questa app è attualmente in fase beta. Altre informazioni come i record sulle piste, le statistiche, i club e i trofei saranno disponibili nei prossimi mesi. Al momento questi dati non sono pubblici. Sto lavorando su nuove funzionalità, quindi resta aggiornato sulle nuove versioni dell\'app e segnala i bug che dovessi incontrare dalla sezione Profilo. Grazie per utilizzare questa app.</string>
     <string name="beta_title">Nuove funzionalità presto in arrivo!</string>
     <string name="easter_egg">Hai trovato l\'easter egg!</string>
+    <string name="download">Download</string>
+    <string name="download_progress">Download tracciato in corso...</string>
+    <string name="download_complete">Download completato!</string>
+    <string name="marshmallow_alert">Non hai concesso il permesso al salvataggio dei tracciati nella memoria!</string>
 </resources>
