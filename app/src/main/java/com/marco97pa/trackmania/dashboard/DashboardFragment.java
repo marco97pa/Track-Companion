@@ -18,10 +18,12 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.marco97pa.trackmania.R;
+import com.marco97pa.trackmania.utils.FLog;
 
 public class DashboardFragment extends Fragment {
 
     private static final String LOG_TAG = "DashboardFragment";
+    private FLog log = new FLog(LOG_TAG);
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -37,6 +39,7 @@ public class DashboardFragment extends Fragment {
         AdView mAdView = root.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+
 
         return root;
     }

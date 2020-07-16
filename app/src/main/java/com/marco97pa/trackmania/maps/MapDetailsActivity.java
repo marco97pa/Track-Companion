@@ -35,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.marco97pa.trackmania.R;
+import com.marco97pa.trackmania.utils.FLog;
 import com.squareup.picasso.Picasso;
 
 import org.jsoup.Jsoup;
@@ -49,6 +50,7 @@ public class MapDetailsActivity extends AppCompatActivity {
 
     private static final int STORAGE_PERMISSION_DOWNLOAD = 8000;
     private static final String LOG_TAG = "MapDetailsActivity";
+    private FLog log = new FLog(LOG_TAG);
     private TextView textBronze;
     private TextView textSilver;
     private TextView textGold;
@@ -141,8 +143,8 @@ public class MapDetailsActivity extends AppCompatActivity {
         private static final String LOG_TAG = "DecodeGBXTask";
 
         protected String doInBackground(String... params) {
-            Log.d(LOG_TAG, "Starting task...");
-            Log.d(LOG_TAG, "Cookie: " + params[0]);
+            log.d( "Starting task...");
+            log.d( "Cookie: " + params[0]);
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
                     .addHeader("Cookie", params[0])
@@ -153,7 +155,7 @@ public class MapDetailsActivity extends AppCompatActivity {
 
                 Document doc = Jsoup.parse(response.body().string());
                 download = doc.select(".btn-primary").attr("href");
-                Log.d(LOG_TAG, download);
+                log.d( download);
 
                 Request download_request = new Request.Builder().url(download).build();
                 Response download_response = client.newCall(download_request).execute();
@@ -165,7 +167,7 @@ public class MapDetailsActivity extends AppCompatActivity {
 
                 String s = new String(buffer);
 
-                Log.d(LOG_TAG, s);
+                log.d( s);
                 return s;
 
             } catch (IOException e) {
@@ -261,9 +263,9 @@ public class MapDetailsActivity extends AppCompatActivity {
         super.onDestroy();
         try {
             unregisterReceiver(onDownloadComplete);
-            Log.d(LOG_TAG, "onDownloadComplete receiver unregistered");
+            log.d( "onDownloadComplete receiver unregistered");
         }catch (Exception e){
-            Log.d(LOG_TAG, "onDownloadComplete receiver is not registered");
+            log.d( "onDownloadComplete receiver is not registered");
         }
     }
 
@@ -274,7 +276,7 @@ public class MapDetailsActivity extends AppCompatActivity {
             case STORAGE_PERMISSION_DOWNLOAD: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.d(LOG_TAG, "Permission granted");
+                    log.d( "Permission granted");
                     // permission was granted, yay!
                     beginDownload(download, title);
 

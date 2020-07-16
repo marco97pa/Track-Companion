@@ -37,6 +37,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.marco97pa.trackmania.BuildConfig;
 import com.marco97pa.trackmania.MainActivity;
 import com.marco97pa.trackmania.R;
+import com.marco97pa.trackmania.utils.FLog;
 import com.squareup.picasso.Picasso;
 
 import org.jsoup.Jsoup;
@@ -48,7 +49,8 @@ import java.util.concurrent.ExecutionException;
 public class PlayerFragment extends Fragment {
 
     private static final String LOG_TAG = "PlayerFragment";
-    private String cookie;
+    private FLog log = new FLog(LOG_TAG);
+    private String cookie, API;
     private TextView nicknameText;
     private ImageView imageView;
     private TextView APIverText;
@@ -103,10 +105,10 @@ public class PlayerFragment extends Fragment {
                     public void onComplete(@NonNull Task<Boolean> task) {
                         if (task.isSuccessful()) {
                             boolean updated = task.getResult();
-                            Log.d(LOG_TAG, "Config params updated: " + updated);
+                            log.d( "Config params updated: " + updated);
                             checkSupportedApi();
                         } else {
-                            Log.d(LOG_TAG, "Config fetch failed");
+                            log.d( "Config fetch failed");
                         }
                     }
                 });
@@ -137,6 +139,7 @@ public class PlayerFragment extends Fragment {
         cookie = ((MainActivity)getActivity()).getCookie();
         if(cookie == null || cookie.isEmpty()){
             ((MainActivity) getActivity()).requestLogin();
+            cookie = ((MainActivity)getActivity()).getCookie();
         }
 
         new RetrievePlayerTask().execute(cookie);
@@ -148,8 +151,8 @@ public class PlayerFragment extends Fragment {
         private static final String LOG_TAG = "RetrievePlayerTask";
 
         protected Player doInBackground(String... cookie) {
-            Log.d(LOG_TAG, "Starting task...");
-            Log.d(LOG_TAG, "Cookie: " + cookie[0]);
+            log.d( "Starting task...");
+            log.d( "Cookie: " + cookie[0]);
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
                     .addHeader("Cookie", cookie[0])
@@ -160,14 +163,14 @@ public class PlayerFragment extends Fragment {
 
                 Document doc = Jsoup.parse(response.body().string());
 
-                Log.d(LOG_TAG, doc.title());
+                log.d( doc.title());
                 String API = doc.select("footer nav .container span.navbar-text").text().substring(8);
-                Log.d(LOG_TAG, "API " + API);
+                log.d( "API " + API);
 
                 String nickname = doc.select("#username").text();
-                Log.d(LOG_TAG, nickname);
+                log.d( nickname);
                 String profile_pic = doc.select("#avatar").attr("src");
-                Log.d(LOG_TAG, profile_pic);
+                log.d( profile_pic);
 
                 Player player = new Player(nickname, profile_pic, API);
                 return player;
@@ -200,7 +203,7 @@ public class PlayerFragment extends Fragment {
 
                 }
                 else{
-                    Log.d(LOG_TAG, "Cookie is empty, authenticating again...");
+                    log.d( "Cookie is empty, authenticating again...");
                     ((MainActivity) getActivity()).requestLogin();
                     cookie = ((MainActivity)getActivity()).getCookie();
                     new RetrievePlayerTask().execute(cookie); //reload data
@@ -216,11 +219,11 @@ public class PlayerFragment extends Fragment {
     private void checkSupportedApi(){
         String supported_api = mFirebaseRemoteConfig.getString("supported_api");
         if(APIverText.getText().toString() != "" && supported_api != "none" && supported_api != "") {
-            Log.d(LOG_TAG, "Supported API (from Firebase): " + supported_api);
-            Log.d(LOG_TAG, "Actual API (from Ubisoft): " + APIverText.getText().toString());
+            log.d( "Supported API (from Firebase): " + supported_api);
+            log.d( "Actual API (from Ubisoft): " + APIverText.getText().toString());
             if (APIverText.getText().toString().contains(supported_api)) {
                 APIverText.setTextColor(ContextCompat.getColor(getActivity(), R.color.green));
-                Log.d(LOG_TAG, "API version supported");
+                log.d( "API version supported");
             } else {
                 Log.w(LOG_TAG, "API version unsupported");
             }

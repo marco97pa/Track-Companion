@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.marco97pa.trackmania.R;
+import com.marco97pa.trackmania.utils.FLog;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class MapAdapter extends RecyclerView.Adapter<MapAdapter.ViewHolder> {
 
     private static final String LOG_TAG = "MapAdapter";
+    private FLog log = new FLog(LOG_TAG);
 
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access
@@ -86,14 +88,14 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(LOG_TAG, "onClick: clicked on: " + maps);
+                log.d( "onClick: clicked on: " + maps);
 
                 Intent intent = new Intent(context, MapDetailsActivity.class);
                 intent.putExtra("map_title", maps.getTitle());
                 intent.putExtra("map_url", maps.getLink());
                 intent.putExtra("map_image", maps.getImage());
                 intent.putExtra("cookie", cookie);
-                Log.d(LOG_TAG, "Cookie: " + cookie);
+                log.d( "Cookie: " + cookie);
                 context.startActivity(intent);
             }
         });
