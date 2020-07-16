@@ -27,6 +27,7 @@ import okhttp3.Response;
 
 import android.os.Environment;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -66,6 +67,12 @@ public class MapDetailsActivity extends AppCompatActivity {
         ActionBar ab = getSupportActionBar();
         // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
 
         Bundle bundle = getIntent().getExtras();
         title = bundle.getString("map_title");
@@ -281,4 +288,5 @@ public class MapDetailsActivity extends AppCompatActivity {
             }
         }
     }
+
 }

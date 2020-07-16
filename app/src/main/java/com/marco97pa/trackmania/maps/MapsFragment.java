@@ -47,9 +47,7 @@ public class MapsFragment extends Fragment {
         empty = (LinearLayout) root.findViewById(R.id.empty);
 
         cookie = ((MainActivity) getActivity()).getCookie();
-        if(cookie == null){
-            ((MainActivity) getActivity()).requestLogin();
-        }
+
         tracks = new ArrayList<Map>();
         // Create adapter passing in the sample user data
         adapter = new MapAdapter(tracks, getActivity(), cookie);
@@ -65,18 +63,31 @@ public class MapsFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        try {
-            Log.d(LOG_TAG, "Loading tracks...");
-            ArrayList<Map> new_tracks = new RetrieveMapsTask().execute(cookie).get();
-            if(new_tracks != null){
-                Log.d(LOG_TAG, "Clearing tracks...");
-                tracks.clear();
-                Log.d(LOG_TAG, "Adding new tracks...");
-                tracks.addAll(new_tracks);
-            }
+        if(cookie == null || cookie.isEmpty()){
+            Log.d(LOG_TAG, "Cookie is empty, authenticating again...");
+            ((MainActivity) getActivity()).requestLogin();
+            cookie =  ((MainActivity) getActivity()).getCookie();
+        }
 
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
+        else {
+            try {
+                Log.d(LOG_TAG, "Loading tracks...");
+                ArrayList<Map> new_tracks = new RetrieveMapsTask().execute(cookie).get();
+                if (new_tracks != null) {
+                    if (new_tracks.isEmpty()){
+                        Log.d(LOG_TAG, "Response is empty, authenticating again...");
+                        ((MainActivity) getActivity()).requestLogin();
+                        cookie =  ((MainActivity) getActivity()).getCookie();
+                        onStart();
+                    }
+                    Log.d(LOG_TAG, "Clearing tracks...");
+                    tracks.clear();
+                    Log.d(LOG_TAG, "Adding new tracks...");
+                    tracks.addAll(new_tracks);
+                }
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -115,9 +126,6 @@ public class MapsFragment extends Fragment {
                 }
                 Log.d(LOG_TAG,"Fetched tracks from server");
 
-                if(doc.select("footer nav .container span.navbar-text").text() == null) {
-                    ((MainActivity) getActivity()).requestLogin();
-                }
                 return new_tracks;
 
             } catch (IOException e) {

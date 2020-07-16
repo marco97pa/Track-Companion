@@ -135,7 +135,7 @@ public class PlayerFragment extends Fragment {
         super.onStart();
 
         cookie = ((MainActivity)getActivity()).getCookie();
-        if(cookie == null){
+        if(cookie == null || cookie.isEmpty()){
             ((MainActivity) getActivity()).requestLogin();
         }
 
@@ -185,7 +185,7 @@ public class PlayerFragment extends Fragment {
 
             //this method will be running on UI thread
             if(player != null) {
-                if(player.getNickname() != null && player.getImage() != null) {
+                if(player.getNickname() != null && player.getImage() != null && !player.getImage().isEmpty()) {
 
                     nicknameText.setText(player.getNickname());
 
@@ -200,7 +200,10 @@ public class PlayerFragment extends Fragment {
 
                 }
                 else{
+                    Log.d(LOG_TAG, "Cookie is empty, authenticating again...");
                     ((MainActivity) getActivity()).requestLogin();
+                    cookie = ((MainActivity)getActivity()).getCookie();
+                    new RetrievePlayerTask().execute(cookie); //reload data
                 }
             }
             else{
