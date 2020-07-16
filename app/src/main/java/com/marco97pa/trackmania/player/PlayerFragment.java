@@ -79,7 +79,7 @@ public class PlayerFragment extends Fragment {
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
                 emailIntent.putExtra(Intent.EXTRA_TEXT, "I had a problem with " +
                         getString(R.string.app_name) + ", version " +  BuildConfig.VERSION_NAME +
-                        ", API version " + APIverText.getText().toString());
+                        ", API version " + API);
                 startActivity(Intent.createChooser(emailIntent, "Send email..."));
             }
         });
@@ -164,7 +164,7 @@ public class PlayerFragment extends Fragment {
                 Document doc = Jsoup.parse(response.body().string());
 
                 log.d( doc.title());
-                String API = doc.select("footer nav .container span.navbar-text").text().substring(8);
+                API = doc.select("footer nav .container span.navbar-text").text().substring(8);
                 log.d( "API " + API);
 
                 String nickname = doc.select("#username").text();
@@ -172,7 +172,7 @@ public class PlayerFragment extends Fragment {
                 String profile_pic = doc.select("#avatar").attr("src");
                 log.d( profile_pic);
 
-                Player player = new Player(nickname, profile_pic, API);
+                Player player = new Player(nickname, profile_pic);
                 return player;
 
             } catch (IOException e) {
@@ -197,7 +197,7 @@ public class PlayerFragment extends Fragment {
                             .placeholder(R.drawable.ic_account_circle_black_24dp)
                             .into(imageView);
 
-                    APIverText.setText(player.getApi_version());
+                    APIverText.setText(API);
 
                     checkSupportedApi();
 
@@ -218,10 +218,10 @@ public class PlayerFragment extends Fragment {
 
     private void checkSupportedApi(){
         String supported_api = mFirebaseRemoteConfig.getString("supported_api");
-        if(APIverText.getText().toString() != "" && supported_api != "none" && supported_api != "") {
+        if(API != "" && API != null && supported_api != "none" && supported_api != "") {
             log.d( "Supported API (from Firebase): " + supported_api);
-            log.d( "Actual API (from Ubisoft): " + APIverText.getText().toString());
-            if (APIverText.getText().toString().contains(supported_api)) {
+            log.d( "Actual API (from Ubisoft): " + API);
+            if (API.contains(supported_api)) {
                 APIverText.setTextColor(ContextCompat.getColor(getActivity(), R.color.green));
                 log.d( "API version supported");
             } else {

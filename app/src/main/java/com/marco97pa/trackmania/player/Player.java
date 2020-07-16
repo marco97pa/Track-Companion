@@ -3,12 +3,10 @@ package com.marco97pa.trackmania.player;
 public class Player {
     private String nickname;
     private String image;
-    private String api_version;
 
-    public Player(String nickname, String image, String api_version){
+    public Player(String nickname, String image){
         this.nickname = nickname;
         this.image = image;
-        this.api_version = api_version;
     }
 
     public String getNickname() {
@@ -27,7 +25,4 @@ public class Player {
         this.image = image;
     }
 
-    public String getApi_version() {
-        return api_version;
-    }
 }
