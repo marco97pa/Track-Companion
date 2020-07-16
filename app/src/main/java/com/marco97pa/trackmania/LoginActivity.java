@@ -14,9 +14,12 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import com.marco97pa.trackmania.utils.FLog;
+
 public class LoginActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "LoginActivity";
+    private FLog log = new FLog(LOG_TAG);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +41,14 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onPageFinished(WebView view, String url)
             {
-                Log.d(LOG_TAG, view.getUrl());
+                log.d( view.getUrl());
                 if(view.getUrl().equals("https://players.trackmania.com/player")){
                     String cookie = CookieManager.getInstance().getCookie(url);
                     if(cookie == null){
                         Log.e(LOG_TAG, "Cookie is null");
                     }
                     else{
-                        Log.d(LOG_TAG, "Acquired this cookie: " + cookie);
+                        log.d( "Acquired this cookie: " + cookie);
                     }
 
                     //Terminate, go to MainActivity

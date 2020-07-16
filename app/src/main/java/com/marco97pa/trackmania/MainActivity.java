@@ -12,6 +12,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.marco97pa.trackmania.utils.FLog;
 
 import java.net.InetAddress;
 
@@ -26,6 +27,7 @@ import androidx.navigation.ui.NavigationUI;
 public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "MainActivity";
+    private FLog log = new FLog(LOG_TAG);
     private static final int REQUEST_LOGIN = 1000;
     private String cookie;
     private boolean logged = false;
@@ -72,13 +74,13 @@ public class MainActivity extends AppCompatActivity {
         if(resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_LOGIN) {
                 if(data.getBooleanExtra("close", false)){
-                    Log.d(LOG_TAG, "Closing app");
+                    log.d( "Closing app");
                     finish();
                 }
                 else{
                     Toast.makeText(this, getString(R.string.log_in_success), Toast.LENGTH_LONG).show();
                     cookie = data.getStringExtra("cookie");
-                    Log.d(LOG_TAG, "Got this cookie: " + cookie);
+                    log.d( "Got this cookie: " + cookie);
                     setLogged(true);
                 }
             }

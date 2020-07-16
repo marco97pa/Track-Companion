@@ -37,6 +37,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.marco97pa.trackmania.BuildConfig;
 import com.marco97pa.trackmania.MainActivity;
 import com.marco97pa.trackmania.R;
+import com.marco97pa.trackmania.utils.FLog;
 import com.squareup.picasso.Picasso;
 
 import org.jsoup.Jsoup;
@@ -48,7 +49,8 @@ import java.util.concurrent.ExecutionException;
 public class PlayerFragment extends Fragment {
 
     private static final String LOG_TAG = "PlayerFragment";
-    private String cookie;
+    private FLog log = new FLog(LOG_TAG);
+    private String cookie, API;
     private TextView nicknameText;
     private ImageView imageView;
     private TextView APIverText;
@@ -77,7 +79,7 @@ public class PlayerFragment extends Fragment {
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
                 emailIntent.putExtra(Intent.EXTRA_TEXT, "I had a problem with " +
                         getString(R.string.app_name) + ", version " +  BuildConfig.VERSION_NAME +
-                        ", API version " + APIverText.getText().toString());
+                        ", API version " + API);
                 startActivity(Intent.createChooser(emailIntent, "Send email..."));
             }
         });
@@ -103,10 +105,10 @@ public class PlayerFragment extends Fragment {
                     public void onComplete(@NonNull Task<Boolean> task) {
                         if (task.isSuccessful()) {
                             boolean updated = task.getResult();
-                            Log.d(LOG_TAG, "Config params updated: " + updated);
+                            log.d( "Config params updated: " + updated);
                             checkSupportedApi();
                         } else {
-                            Log.d(LOG_TAG, "Config fetch failed");
+                            log.d( "Config fetch failed");
                         }
                     }
                 });
@@ -135,8 +137,9 @@ public class PlayerFragment extends Fragment {
         super.onStart();
 
         cookie = ((MainActivity)getActivity()).getCookie();
-        if(cookie == null){
+        if(cookie == null || cookie.isEmpty()){
             ((MainActivity) getActivity()).requestLogin();
+            cookie = ((MainActivity)getActivity()).getCookie();
         }
 
         new RetrievePlayerTask().execute(cookie);
@@ -148,8 +151,8 @@ public class PlayerFragment extends Fragment {
         private static final String LOG_TAG = "RetrievePlayerTask";
 
         protected Player doInBackground(String... cookie) {
-            Log.d(LOG_TAG, "Starting task...");
-            Log.d(LOG_TAG, "Cookie: " + cookie[0]);
+            log.d( "Starting task...");
+            log.d( "Cookie: " + cookie[0]);
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
                     .addHeader("Cookie", cookie[0])
@@ -160,16 +163,16 @@ public class PlayerFragment extends Fragment {
 
                 Document doc = Jsoup.parse(response.body().string());
 
-                Log.d(LOG_TAG, doc.title());
-                String API = doc.select("footer nav .container span.navbar-text").text().substring(8);
-                Log.d(LOG_TAG, "API " + API);
+                log.d( doc.title());
+                API = doc.select("footer nav .container span.navbar-text").text().substring(8);
+                log.d( "API " + API);
 
                 String nickname = doc.select("#username").text();
-                Log.d(LOG_TAG, nickname);
+                log.d( nickname);
                 String profile_pic = doc.select("#avatar").attr("src");
-                Log.d(LOG_TAG, profile_pic);
+                log.d( profile_pic);
 
-                Player player = new Player(nickname, profile_pic, API);
+                Player player = new Player(nickname, profile_pic);
                 return player;
 
             } catch (IOException e) {
@@ -185,7 +188,7 @@ public class PlayerFragment extends Fragment {
 
             //this method will be running on UI thread
             if(player != null) {
-                if(player.getNickname() != null && player.getImage() != null) {
+                if(player.getNickname() != null && player.getImage() != null && !player.getImage().isEmpty()) {
 
                     nicknameText.setText(player.getNickname());
 
@@ -194,13 +197,16 @@ public class PlayerFragment extends Fragment {
                             .placeholder(R.drawable.ic_account_circle_black_24dp)
                             .into(imageView);
 
-                    APIverText.setText(player.getApi_version());
+                    APIverText.setText(API);
 
                     checkSupportedApi();
 
                 }
                 else{
+                    log.d( "Cookie is empty, authenticating again...");
                     ((MainActivity) getActivity()).requestLogin();
+                    cookie = ((MainActivity)getActivity()).getCookie();
+                    new RetrievePlayerTask().execute(cookie); //reload data
                 }
             }
             else{
@@ -212,12 +218,12 @@ public class PlayerFragment extends Fragment {
 
     private void checkSupportedApi(){
         String supported_api = mFirebaseRemoteConfig.getString("supported_api");
-        if(APIverText.getText().toString() != "" && supported_api != "none" && supported_api != "") {
-            Log.d(LOG_TAG, "Supported API (from Firebase): " + supported_api);
-            Log.d(LOG_TAG, "Actual API (from Ubisoft): " + APIverText.getText().toString());
-            if (APIverText.getText().toString().contains(supported_api)) {
+        if(API != "" && API != null && supported_api != "none" && supported_api != "") {
+            log.d( "Supported API (from Firebase): " + supported_api);
+            log.d( "Actual API (from Ubisoft): " + API);
+            if (API.contains(supported_api)) {
                 APIverText.setTextColor(ContextCompat.getColor(getActivity(), R.color.green));
-                Log.d(LOG_TAG, "API version supported");
+                log.d( "API version supported");
             } else {
                 Log.w(LOG_TAG, "API version unsupported");
             }
