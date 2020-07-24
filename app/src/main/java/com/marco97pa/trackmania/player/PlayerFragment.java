@@ -32,6 +32,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.marco97pa.trackmania.BuildConfig;
@@ -164,8 +165,14 @@ public class PlayerFragment extends Fragment {
                 Document doc = Jsoup.parse(response.body().string());
 
                 log.d( doc.title());
-                API = doc.select("footer nav .container span.navbar-text").text().substring(8);
-                log.d( "API " + API);
+                try {
+                    API = doc.select("footer div.container div.row.mt-4 div.col.small.text-muted p").last().text().substring(8);
+                    log.d("API " + API);
+                }catch (Exception e){
+                    log.e("Error scraping API version");
+                    FirebaseCrashlytics.getInstance().recordException(e);
+                    API = "Error";
+                }
 
                 String nickname = doc.select("#username").text();
                 log.d( nickname);
