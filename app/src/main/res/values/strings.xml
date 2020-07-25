@@ -23,4 +23,7 @@
     <string name="download_progress">Downloading track...</string>
     <string name="download_complete">Download completed!</string>
     <string name="marshmallow_alert">You have not granted the permission to write on your storage!</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="prompt_password">Password</string>
+    <string name="prompt_email">Email</string>
 </resources>

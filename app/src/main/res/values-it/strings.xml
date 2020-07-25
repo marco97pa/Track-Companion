@@ -24,4 +24,7 @@
     <string name="download_progress">Download tracciato in corso...</string>
     <string name="download_complete">Download completato!</string>
     <string name="marshmallow_alert">Non hai concesso il permesso al salvataggio dei tracciati nella memoria!</string>
+    <string name="prompt_email">Email</string>
+    <string name="action_sign_in">Accedi</string>
+    <string name="prompt_password">Password</string>
 </resources>
