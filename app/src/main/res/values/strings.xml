@@ -26,4 +26,5 @@
     <string name="action_sign_in">Sign in</string>
     <string name="prompt_password">Password</string>
     <string name="prompt_email">Email</string>
+    <string name="log_in_hint">Log in using your uPlay account</string>
 </resources>

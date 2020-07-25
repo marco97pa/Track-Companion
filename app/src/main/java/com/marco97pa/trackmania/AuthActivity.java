@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -158,9 +159,11 @@ public class AuthActivity extends AppCompatActivity {
             super.onPostExecute(auth);
             //this method will be running on UI thread
             loading.setVisibility(View.GONE);
+            logInButton.setEnabled(true);
+
             if(auth != null) {
                 Snackbar.make(logInButton, getString(R.string.log_in_success), BaseTransientBottomBar.LENGTH_LONG).show();
-                //Launch MAIN ACTIVITY PASSING AUTH
+                //TODO: Launch MAIN ACTIVITY PASSING AUTH
             }
             else{
                 Snackbar.make(logInButton, getString(R.string.no_network), BaseTransientBottomBar.LENGTH_LONG).show();
@@ -171,8 +174,16 @@ public class AuthActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
 
+            hideKeybaord(logInButton);
+            logInButton.setEnabled(false);
             loading.setVisibility(View.VISIBLE);
             loading.setIndeterminate(true);
+
+        }
+
+        private void hideKeybaord(View v) {
+            InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(v.getApplicationWindowToken(),0);
         }
     }
 
