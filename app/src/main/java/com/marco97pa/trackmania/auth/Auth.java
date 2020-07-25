@@ -1,4 +1,4 @@
-package com.marco97pa.trackmania;
+package com.marco97pa.trackmania.auth;
 
 public class Auth {
     private String accessToken;

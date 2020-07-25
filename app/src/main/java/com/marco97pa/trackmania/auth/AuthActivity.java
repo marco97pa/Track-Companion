@@ -1,9 +1,8 @@
-package com.marco97pa.trackmania;
+package com.marco97pa.trackmania.auth;
 
 import androidx.appcompat.app.AppCompatActivity;
 import okhttp3.Call;
 import okhttp3.Credentials;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -20,16 +19,11 @@ import android.widget.TextView;
 
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.marco97pa.trackmania.player.Player;
-import com.marco97pa.trackmania.player.PlayerFragment;
+import com.marco97pa.trackmania.R;
 import com.marco97pa.trackmania.utils.FLog;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
