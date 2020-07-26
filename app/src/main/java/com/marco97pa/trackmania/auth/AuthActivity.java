@@ -1,5 +1,6 @@
 package com.marco97pa.trackmania.auth;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import okhttp3.Call;
 import okhttp3.Credentials;
@@ -9,6 +10,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
@@ -21,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.marco97pa.trackmania.MainActivity;
@@ -53,9 +56,14 @@ public class AuthActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String email = emailTextView.getText().toString();
                 String password = passwordTextView.getText().toString();
-
-                //TODO: check nulls or empty
-                new AuthenticationTask().execute(email, password);
+                
+                if(isNetworkConnected()) {
+                    new AuthenticationTask().execute(email, password);
+                }
+                else{
+                    hideKeybaord(logInButton);
+                    Snackbar.make(logInButton, getString(R.string.no_network), BaseTransientBottomBar.LENGTH_LONG).show();
+                }
             }
         });
     }
@@ -163,7 +171,7 @@ public class AuthActivity extends AppCompatActivity {
                 startActivity(intent);
             }
             else{
-                Snackbar.make(logInButton, getString(R.string.no_network), BaseTransientBottomBar.LENGTH_LONG).show();
+                Snackbar.make(logInButton, getString(R.string.error_credentials), BaseTransientBottomBar.LENGTH_LONG).show();
             }
         }
 
@@ -178,10 +186,12 @@ public class AuthActivity extends AppCompatActivity {
 
         }
 
-        private void hideKeybaord(View v) {
-            InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(v.getApplicationWindowToken(),0);
-        }
+
+    }
+
+    private void hideKeybaord(View v) {
+        InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(v.getApplicationWindowToken(),0);
     }
 
     private boolean isNetworkConnected() {

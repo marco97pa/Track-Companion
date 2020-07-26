@@ -28,4 +28,6 @@
     <string name="action_sign_in">Accedi</string>
     <string name="prompt_password">Password</string>
     <string name="log_in_hint">Accedi con il tuo account uPlay</string>
+    <string name="ok">Ok</string>
+    <string name="error_credentials">Username o password non validi!</string>
 </resources>

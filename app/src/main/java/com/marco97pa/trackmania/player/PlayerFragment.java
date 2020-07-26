@@ -55,10 +55,9 @@ public class PlayerFragment extends Fragment {
 
     private static final String LOG_TAG = "PlayerFragment";
     private FLog log = new FLog(LOG_TAG);
+    private String API;
     private Player player;
-    private String cookie, API;
     private TextView nicknameText, zoneText;
-    private ImageView imageView;
     private TextView APIverText;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     int taps = 0;
@@ -69,7 +68,6 @@ public class PlayerFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_player, container, false);
 
         nicknameText = root.findViewById(R.id.name);
-        imageView = root.findViewById(R.id.image);
         zoneText = root.findViewById(R.id.zone);
 
         TextView appVer = root.findViewById(R.id.app_ver);
@@ -149,7 +147,8 @@ public class PlayerFragment extends Fragment {
                 ((MainActivity)getActivity()).getAuth().getUsername()
         );
 
-        APIverText.setText(((MainActivity)getActivity()).getAuth().getAPIversion());
+        API = ((MainActivity)getActivity()).getAuth().getAPIversion();
+        APIverText.setText(API);
         nicknameText.setText(player.getUsername());
         new getPlayerZoneTask().execute(
                 ((MainActivity)getActivity()).getAuth().getAccessToken(),

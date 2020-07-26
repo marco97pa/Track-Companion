@@ -27,4 +27,6 @@
     <string name="prompt_password">Password</string>
     <string name="prompt_email">Email</string>
     <string name="log_in_hint">Log in using your uPlay account</string>
+    <string name="error_credentials">Wrong username or password!</string>
+    <string name="ok">Ok</string>
 </resources>
