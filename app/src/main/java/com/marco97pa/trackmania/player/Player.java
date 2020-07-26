@@ -1,28 +1,33 @@
 package com.marco97pa.trackmania.player;
 
+import android.content.Context;
+
 public class Player {
-    private String nickname;
-    private String image;
+    private String accountID;
+    private String username;
+    private String zoneID;
+    private String zone;
 
-    public Player(String nickname, String image){
-        this.nickname = nickname;
-        this.image = image;
+    public Player(String accountID, String username){
+        this.accountID = accountID;
+        this.username = username;
     }
 
-    public String getNickname() {
-        return nickname;
+    public String getAccountID() {
+        return accountID;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public String getUsername() {
+        return username;
     }
 
-    public String getImage() {
-        return image;
+    public void setZoneID(String zoneID, Context context) {
+        this.zoneID = zoneID;
+        ZoneUtils utils = new ZoneUtils();
+        this.zone = utils.retrieveZoneName(zoneID, context);
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public String getZone() {
+        return zone;
     }
-
 }

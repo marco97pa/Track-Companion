@@ -19,8 +19,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import com.google.android.gms.ads.AdRequest;
@@ -41,6 +43,8 @@ import com.marco97pa.trackmania.R;
 import com.marco97pa.trackmania.utils.FLog;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -51,8 +55,9 @@ public class PlayerFragment extends Fragment {
 
     private static final String LOG_TAG = "PlayerFragment";
     private FLog log = new FLog(LOG_TAG);
+    private Player player;
     private String cookie, API;
-    private TextView nicknameText;
+    private TextView nicknameText, zoneText;
     private ImageView imageView;
     private TextView APIverText;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
@@ -65,9 +70,11 @@ public class PlayerFragment extends Fragment {
 
         nicknameText = root.findViewById(R.id.name);
         imageView = root.findViewById(R.id.image);
+        zoneText = root.findViewById(R.id.zone);
 
         TextView appVer = root.findViewById(R.id.app_ver);
         appVer.setText(BuildConfig.VERSION_NAME);
+
         APIverText = root.findViewById(R.id.api_ver);
 
         LinearLayout bug = root.findViewById(R.id.report_bug);
@@ -137,93 +144,74 @@ public class PlayerFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        cookie = ((MainActivity)getActivity()).getCookie();
-        if(cookie == null || cookie.isEmpty()){
-            ((MainActivity) getActivity()).requestLogin();
-            cookie = ((MainActivity)getActivity()).getCookie();
-        }
+        player = new Player(
+                ((MainActivity)getActivity()).getAuth().getAccountId(),
+                ((MainActivity)getActivity()).getAuth().getUsername()
+        );
 
-        new RetrievePlayerTask().execute(cookie);
-
+        APIverText.setText(((MainActivity)getActivity()).getAuth().getAPIversion());
+        nicknameText.setText(player.getUsername());
+        new getPlayerZoneTask().execute(
+                ((MainActivity)getActivity()).getAuth().getAccessToken(),
+                player.getAccountID());
     }
 
-    public class RetrievePlayerTask extends AsyncTask<String, Void, Player> {
+    public class getPlayerZoneTask extends AsyncTask<String, Void, String> {
 
-        private static final String LOG_TAG = "RetrievePlayerTask";
+        private static final String LOG_TAG = "getPlayerZoneTask";
+        private FLog log = new FLog(LOG_TAG);
 
-        protected Player doInBackground(String... cookie) {
-            log.d( "Starting task...");
-            log.d( "Cookie: " + cookie[0]);
+        private static final int RESPONSE_OK = 200;
+        private String zoneId = null;
+
+        protected String doInBackground(String... params) {
+            log.d("Starting task...");
+            String token = params[0];
+            String accountID = params[1];
+
+            /*
+             * GET PLAYER'S ZONE FROM ACCOUNTID
+             * HTTP GET to https://prod.trackmania.core.nadeo.online/accounts/{accountID}/zone
+             * Headers:
+             *   Authorization = nadeo_v1 t={token}
+             *
+             */
+
             OkHttpClient client = new OkHttpClient();
-            Request request = new Request.Builder()
-                    .addHeader("Cookie", cookie[0])
-                    .url("https://players.trackmania.com/player")
-                    .build();
-
-            try (Response response = client.newCall(request).execute()) {
-
-                Document doc = Jsoup.parse(response.body().string());
-
-                log.d( doc.title());
-                try {
-                    API = doc.select("footer div.container div.row.mt-4 div.col.small.text-muted p").last().text().substring(8);
-                    log.d("API " + API);
-                }catch (Exception e){
-                    log.e("Error scraping API version");
-                    FirebaseCrashlytics.getInstance().recordException(e);
-                    API = "Error";
+            try {
+                Request request = new Request.Builder()
+                        .url("https://prod.trackmania.core.nadeo.online/accounts/" + accountID + "/zone")
+                        .addHeader("Authorization", "nadeo_v1 t=" + token)
+                        .build();
+                Call call = client.newCall(request);
+                Response response = call.execute();
+                if (response.code() == RESPONSE_OK) {
+                    String jsonData = response.body().string();
+                    JSONObject Jobject = new JSONObject(jsonData);
+                    zoneId = Jobject.get("zoneId").toString();
+                    log.d("zoneId: " + zoneId);
+                } else {
+                    log.d("Response: " + response.code());
                 }
-
-                String nickname = doc.select("#username").text();
-                log.d( nickname);
-                String profile_pic = doc.select("#avatar").attr("src");
-                log.d( profile_pic);
-
-                Player player = new Player(nickname, profile_pic);
-                return player;
-
-            } catch (IOException e) {
+            } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }
 
-            return null;
-
+            return zoneId;
         }
 
-        protected void onPostExecute(Player player) {
-            super.onPostExecute(player);
-
-            //this method will be running on UI thread
-            if(player != null) {
-                if(player.getNickname() != null && player.getImage() != null && !player.getImage().isEmpty()) {
-
-                    nicknameText.setText(player.getNickname());
-
-                    Picasso.get()
-                            .load(player.getImage())
-                            .placeholder(R.drawable.ic_account_circle_black_24dp)
-                            .into(imageView);
-
-                    APIverText.setText(API);
-
-                    checkSupportedApi();
-
-                }
-                else{
-                    log.d( "Cookie is empty, authenticating again...");
-                    ((MainActivity) getActivity()).requestLogin();
-                    cookie = ((MainActivity)getActivity()).getCookie();
-                    new RetrievePlayerTask().execute(cookie); //reload data
-                }
-            }
-            else{
-                Snackbar.make(imageView,getString(R.string.no_network), BaseTransientBottomBar.LENGTH_LONG).show();
-            }
+        @Override
+        protected void onPostExecute(String zoneId) {
+            super.onPostExecute(zoneId);
+            //execution on main/UI thread
+            player.setZoneID(zoneId, getContext());
+            log.d("Player's zone is " + player.getZone());
+            zoneText.setText( player.getZone() );
         }
-
     }
 
-    private void checkSupportedApi(){
+
+        private void checkSupportedApi(){
         String supported_api = mFirebaseRemoteConfig.getString("supported_api");
         if(API != "" && API != null && supported_api != "none" && supported_api != "") {
             log.d( "Supported API (from Firebase): " + supported_api);
