@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,7 +34,7 @@ import java.io.IOException;
 
 public class AuthActivity extends AppCompatActivity {
 
-    private TextView emailTextView, passwordTextView;
+    private EditText emailTextView, passwordTextView;
     private Button logInButton;
     private ProgressBar loading;
 
@@ -42,8 +43,8 @@ public class AuthActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
 
-        emailTextView = (TextView) findViewById(R.id.username);
-        passwordTextView = (TextView) findViewById(R.id.password);
+        emailTextView = (EditText) findViewById(R.id.username);
+        passwordTextView = (EditText) findViewById(R.id.password);
         logInButton = (Button) findViewById(R.id.login);
         loading = (ProgressBar) findViewById(R.id.loading);
 

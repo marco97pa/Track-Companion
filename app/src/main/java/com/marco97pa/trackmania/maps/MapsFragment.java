@@ -49,7 +49,7 @@ public class MapsFragment extends Fragment {
         rvMaps = (RecyclerView) root.findViewById(R.id.rvMaps);
         empty = (LinearLayout) root.findViewById(R.id.empty);
 
-        cookie = ((MainActivity) getActivity()).getCookie();
+        cookie = null;
 
         tracks = new ArrayList<Map>();
         // Create adapter passing in the sample user data
@@ -66,21 +66,13 @@ public class MapsFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        if(cookie == null || cookie.isEmpty()){
-            log.d( "Cookie is empty, authenticating again...");
-            ((MainActivity) getActivity()).requestLogin();
-            cookie =  ((MainActivity) getActivity()).getCookie();
-        }
-
-        else {
             try {
                 log.d( "Loading tracks...");
                 ArrayList<Map> new_tracks = new RetrieveMapsTask().execute(cookie).get();
                 if (new_tracks != null) {
                     if (new_tracks.isEmpty()){
                         log.d( "Response is empty, authenticating again...");
-                        ((MainActivity) getActivity()).requestLogin();
-                        cookie =  ((MainActivity) getActivity()).getCookie();
+
                     }
                     log.d( "Clearing tracks...");
                     tracks.clear();
@@ -90,7 +82,7 @@ public class MapsFragment extends Fragment {
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
-        }
+
     }
 
 
