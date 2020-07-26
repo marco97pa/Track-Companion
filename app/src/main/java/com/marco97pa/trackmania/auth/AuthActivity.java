@@ -8,17 +8,21 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Base64;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.marco97pa.trackmania.MainActivity;
 import com.marco97pa.trackmania.R;
 import com.marco97pa.trackmania.utils.FLog;
 
@@ -26,7 +30,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 public class AuthActivity extends AppCompatActivity {
 
@@ -49,10 +52,7 @@ public class AuthActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String email = emailTextView.getText().toString();
                 String password = passwordTextView.getText().toString();
-                String login = email + ":" + password;
-                byte[] data = login.getBytes(StandardCharsets.UTF_8);
-                String base64 = Base64.encodeToString(data, Base64.DEFAULT);
-                //TODO: Remove base64
+
                 //TODO: check nulls or empty
                 new AuthenticationTask().execute(email, password);
             }
@@ -66,8 +66,6 @@ public class AuthActivity extends AppCompatActivity {
 
         private static final int RESPONSE_OK = 200;
         private String ticket = null;
-        private String refreshToken = null;
-        private String accessToken = null;
 
         protected Auth doInBackground(String... params) {
             log.d( "Starting task...");
@@ -133,9 +131,9 @@ public class AuthActivity extends AppCompatActivity {
                     if(response.code() == RESPONSE_OK){
                         String jsonData = response.body().string();
                         JSONObject Jobject = new JSONObject(jsonData);
-                        accessToken = Jobject.get("accessToken").toString();
+                        String accessToken = Jobject.get("accessToken").toString();
                         log.d("accessToken: " + accessToken);
-                        refreshToken = Jobject.get("refreshToken").toString();
+                        String refreshToken = Jobject.get("refreshToken").toString();
                         log.d("refreshToken: " + refreshToken);
 
                         auth = new Auth(accessToken, refreshToken);
@@ -156,8 +154,12 @@ public class AuthActivity extends AppCompatActivity {
             logInButton.setEnabled(true);
 
             if(auth != null) {
-                Snackbar.make(logInButton, getString(R.string.log_in_success), BaseTransientBottomBar.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.log_in_success), Toast.LENGTH_LONG).show();
                 //TODO: Launch MAIN ACTIVITY PASSING AUTH
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra("accessToken", auth.getAccessToken());
+                intent.putExtra("refreshToken", auth.getRefreshToken());
+                startActivity(intent);
             }
             else{
                 Snackbar.make(logInButton, getString(R.string.no_network), BaseTransientBottomBar.LENGTH_LONG).show();
@@ -181,4 +183,8 @@ public class AuthActivity extends AppCompatActivity {
         }
     }
 
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+    }
 }

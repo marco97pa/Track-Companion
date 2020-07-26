@@ -12,6 +12,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.marco97pa.trackmania.auth.Auth;
 import com.marco97pa.trackmania.utils.FLog;
 
 import java.net.InetAddress;
@@ -28,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "MainActivity";
     private FLog log = new FLog(LOG_TAG);
+    private Auth auth;
+    //TODO: Da qua in poi non servono
     private static final int REQUEST_LOGIN = 1000;
     private String cookie;
     private boolean logged = false;
@@ -46,67 +49,14 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-        if(isNetworkConnected()){
-                if(isLogged() == false){
-                    requestLogin();
-                }
-        }
-        else{
-            AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-            alertDialog.setTitle(getString(R.string.error_network));
-            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            finish();
-                        }
-                    });
-            alertDialog.setMessage(getString(R.string.no_network));
-            alertDialog.show();
-        }
+        auth = new Auth(
+            getIntent().getStringExtra("accessToken"),
+            getIntent().getStringExtra("refreshToken")
+        );
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_LOGIN) {
-                if(data.getBooleanExtra("close", false)){
-                    log.d( "Closing app");
-                    finish();
-                }
-                else{
-                    Toast.makeText(this, getString(R.string.log_in_success), Toast.LENGTH_LONG).show();
-                    cookie = data.getStringExtra("cookie");
-                    log.d( "Got this cookie: " + cookie);
-                    setLogged(true);
-                }
-            }
-        }
+    public Auth getAuth() {
+        return auth;
     }
-
-    public boolean isLogged() { ;
-        return logged;
-    }
-
-    private void setLogged(boolean logged){
-        this.logged = logged;
-    }
-
-    public String getCookie(){
-        return cookie;
-    }
-
-    public void requestLogin(){
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivityForResult(intent, REQUEST_LOGIN);
-    }
-
-    private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
-    }
-
 }
