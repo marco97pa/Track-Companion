@@ -208,11 +208,11 @@ public class PlayerFragment extends Fragment {
                     Gson gson = new Gson();
                     Type trophyType = new TypeToken<Trophy>() { }.getType();
                     trophy = gson.fromJson(jsonData, trophyType);
-                    JSONObject Jobject = new JSONObject(jsonData);
+
                 } else {
                     log.d("Response: " + response.code());
                 }
-            } catch (IOException | JSONException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 

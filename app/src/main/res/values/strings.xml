@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Track Companion</string>
-    <string name="title_maps">Maps</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_more">More</string>
+    <string name="title_dashboard">Season</string>
     <string name="title_player">Profile</string>
     <string name="title_activity_map_details">Map Details</string>
     <string name="action_settings">Settings</string>
@@ -30,4 +30,6 @@
     <string name="error_credentials">Wrong username or password!</string>
     <string name="ok">Ok</string>
     <string name="points">Points:</string>
+    <string name="loading">Loading...</string>
+    <string name="loading_d">Retrieving data from servers...</string>
 </resources>

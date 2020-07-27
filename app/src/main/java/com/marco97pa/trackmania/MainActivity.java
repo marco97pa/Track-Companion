@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.marco97pa.trackmania.auth.Auth;
+import com.marco97pa.trackmania.dashboard.Season;
 import com.marco97pa.trackmania.utils.FLog;
 
 import java.net.InetAddress;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "MainActivity";
     private FLog log = new FLog(LOG_TAG);
     private Auth auth;
+    private Season season = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,5 +56,13 @@ public class MainActivity extends AppCompatActivity {
 
     public Auth getAuth() {
         return auth;
+    }
+
+    public Season getSeason() {
+        return season;
+    }
+
+    public void setSeason(Season season) {
+        this.season = season;
     }
 }

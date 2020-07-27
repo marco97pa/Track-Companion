@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Track Companion</string>
-    <string name="title_maps">Tracciati</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_more">Altro</string>
+    <string name="title_dashboard">Stagione</string>
     <string name="title_player">Profilo</string>
     <string name="title_activity_map_details">Dettagli tracciato</string>
     <string name="action_settings">Impostazioni</string>
@@ -30,4 +30,7 @@
     <string name="log_in_hint">Accedi con il tuo account uPlay</string>
     <string name="ok">Ok</string>
     <string name="error_credentials">Username o password non validi!</string>
+    <string name="points">Punti:</string>
+    <string name="loading">Caricamento...</string>
+    <string name="loading_d">Sto recuperando i dati dai server...</string>
 </resources>
