@@ -29,4 +29,5 @@
     <string name="log_in_hint">Log in using your uPlay account</string>
     <string name="error_credentials">Wrong username or password!</string>
     <string name="ok">Ok</string>
+    <string name="points">Points:</string>
 </resources>

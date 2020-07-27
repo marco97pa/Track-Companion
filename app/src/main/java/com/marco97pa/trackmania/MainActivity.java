@@ -30,10 +30,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "MainActivity";
     private FLog log = new FLog(LOG_TAG);
     private Auth auth;
-    //TODO: Da qua in poi non servono
-    private static final int REQUEST_LOGIN = 1000;
-    private String cookie;
-    private boolean logged = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

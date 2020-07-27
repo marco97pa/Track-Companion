@@ -20,10 +20,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.marco97pa.trackmania.MainActivity;
@@ -41,6 +39,11 @@ public class AuthActivity extends AppCompatActivity {
     private Button logInButton;
     private ProgressBar loading;
 
+    //TUTTo questo in onstart
+    //TODO: Check if an old token exists https://gist.github.com/codecat/4dfd3719e1f8d9e5ef439d639abe0de4
+    //          if not expired > refresh token and save
+    //TODO: Add AUtologin check > Save user e password plain but don't show them when login
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +59,7 @@ public class AuthActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String email = emailTextView.getText().toString();
                 String password = passwordTextView.getText().toString();
-                
+
                 if(isNetworkConnected()) {
                     new AuthenticationTask().execute(email, password);
                 }
@@ -164,7 +167,7 @@ public class AuthActivity extends AppCompatActivity {
 
             if(auth != null) {
                 Toast.makeText(getApplicationContext(), getString(R.string.log_in_success), Toast.LENGTH_LONG).show();
-                //TODO: Launch MAIN ACTIVITY PASSING AUTH
+                //Launch MAIN ACTIVITY passing tokens
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.putExtra("accessToken", auth.getAccessToken());
                 intent.putExtra("refreshToken", auth.getRefreshToken());

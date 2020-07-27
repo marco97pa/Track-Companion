@@ -40,7 +40,9 @@ public class DashboardFragment extends Fragment {
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
-
+        //TODO: GET /api/token/campaign/official?offset=0&length=1 SOLO LA PRIMA
+        //TODO: GET /api/token/leaderboard/group/groupId/ https://github.com/The-Firexx/trackmania2020apidocumentation/blob/master/LiveServices.md
+        //TODO: GET /api/token/leaderboard/group/groupId/map
         return root;
     }
 }

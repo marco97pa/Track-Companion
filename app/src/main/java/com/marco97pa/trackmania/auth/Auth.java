@@ -15,7 +15,7 @@ public class Auth {
         this.refreshToken = refreshToken;
     }
 
-    //TODO: Check if expired, then renew
+
     public String getAccessToken() {
         return accessToken;
     }
@@ -25,7 +25,7 @@ public class Auth {
     }
 
     public boolean isExpired() {
-        return jwt.isExpired(2); // 2 seconds leeway
+        return jwt.isExpired(10); // 10 seconds leeway
     }
 
     public String getUsername(){
