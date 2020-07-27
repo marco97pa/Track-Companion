@@ -179,6 +179,8 @@ public class PlayerFragment extends Fragment {
      * Headers:
      *   Authorization = nadeo_v1 t={token from Auth stage 1}
      *
+     * See also https://www.trackmania.com/2020/06/26/the-rankings-system-in-trackmania/
+     *
      */
     public class getPlayerTrophiesTask extends AsyncTask<String, Void, Trophy> {
 
