@@ -8,4 +8,5 @@
     <dimen name="text_margin">16dp</dimen>
     <dimen name="record_row_label">20dp</dimen>
     <dimen name="record_top_margin">32dp</dimen>
+    <dimen name="bottom_navigation_view_height_margin">72dp</dimen>
 </resources>

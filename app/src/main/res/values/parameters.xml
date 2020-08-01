@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="URL_stage0" translatable="false">https://public-ubiservices.ubi.com/v3/profiles/sessions</string>
+    <string name="URL_stage1" translatable="false">https://prod.trackmania.core.nadeo.online/v2/authentication/token/ubiservices</string>
+    <string name="Ubi_AppId" translatable="false">86263886-327a-4328-ac69-527f0d20a237</string>
+    <string name="Ubi_RequestedPlatformType" translatable="false">uplay</string>
+</resources>

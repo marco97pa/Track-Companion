@@ -46,12 +46,10 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.ViewHolder> {
     // Store a member variable for the contacts
     private List<Map> mMaps;
     private Context context;
-    private String cookie;
 
     // Pass in the contact array into the constructor
-    public MapAdapter(List<Map> maps, Context context, String cookie) {
+    public MapAdapter(List<Map> maps, Context context) {
         this.context = context;
-        this.cookie = cookie;
         mMaps = maps;
     }
 
@@ -77,13 +75,12 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.ViewHolder> {
 
         // Set item views based on your views and data model
         TextView textView = holder.titleTextView;
-        textView.setText(maps.getTitle());
+        textView.setText(maps.getName());
         ImageView image = holder.imageView;
-        if(maps.getImage().isEmpty()) {
+        if(maps.getThumbnailUrl().isEmpty()) {
             image.setImageResource(R.drawable.track);
-            //image.setBackgroundResource(R.drawable.progressgreen);
         }else {
-            Picasso.get().load(maps.getImage()).into(image);
+            Picasso.get().load(maps.getThumbnailUrl()).into(image);
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,11 +88,15 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.ViewHolder> {
                 log.d( "onClick: clicked on: " + maps);
 
                 Intent intent = new Intent(context, MapDetailsActivity.class);
-                intent.putExtra("map_title", maps.getTitle());
-                intent.putExtra("map_url", maps.getLink());
-                intent.putExtra("map_image", maps.getImage());
-                intent.putExtra("cookie", cookie);
-                log.d( "Cookie: " + cookie);
+                intent.putExtra("map_name", maps.getName());
+                intent.putExtra("map_url", maps.getFileUrl());
+                intent.putExtra("map_image", maps.getThumbnailUrl());
+                intent.putExtra("map_id", maps.getMapId());
+                intent.putExtra("map_uid", maps.getMapUid());
+                intent.putExtra("map_score_author", maps.getAuthorScore());
+                intent.putExtra("map_score_gold", maps.getGoldScore());
+                intent.putExtra("map_score_silver", maps.getSilverScore());
+                intent.putExtra("map_score_bronze", maps.getBronzeScore());
                 context.startActivity(intent);
             }
         });

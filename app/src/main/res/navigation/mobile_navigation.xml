@@ -6,10 +6,10 @@
     app:startDestination="@+id/navigation_dashboard">
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.marco97pa.trackmania.maps.MapsFragment"
-        android:label="@string/title_maps"
-        tools:layout="@layout/fragment_maps" />
+        android:id="@+id/navigation_more"
+        android:name="com.marco97pa.trackmania.MoreFragment"
+        android:label="@string/title_more"
+        tools:layout="@layout/fragment_more" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
@@ -18,7 +18,7 @@
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_profile"
         android:name="com.marco97pa.trackmania.player.PlayerFragment"
         android:label="@string/title_player"
         tools:layout="@layout/fragment_player" />

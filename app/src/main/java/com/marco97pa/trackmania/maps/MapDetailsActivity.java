@@ -55,10 +55,14 @@ public class MapDetailsActivity extends AppCompatActivity {
     private TextView textSilver;
     private TextView textGold;
     private TextView textAuthor;
-    private Button downloadButton;
-    private String download, title, url, image_url;
+    private String title, url, image_url, id, uid;
+    private long score_author, score_gold, score_silver, score_bronze;
     private long downloadID;
     private Context context;
+
+    //TODO Build leaderboard
+    //Python: https://github.com/jonese1234/Trackmania-2020-Leaderboard-Scraper/blob/master/util/leaderboard.py
+    //Concept: https://github.com/The-Firexx/trackmania2020apidocumentation/blob/master/LiveServices.md#get-apitokenleaderboardgrouppersonal_bestmapmapidsurround11
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,29 +81,18 @@ public class MapDetailsActivity extends AppCompatActivity {
         });
 
         Bundle bundle = getIntent().getExtras();
-        title = bundle.getString("map_title");
+        title = bundle.getString("map_name");
         url = bundle.getString("map_url");
         image_url = bundle.getString("map_image");
+        id = bundle.getString("map_id");
+        uid = bundle.getString("map_uid");
+        score_author = Long.parseLong(bundle.getString("map_score_author"));
+        score_gold = Long.parseLong(bundle.getString("map_score_gold"));
+        score_silver = Long.parseLong(bundle.getString("map_score_silver"));
+        score_bronze = Long.parseLong(bundle.getString("map_score_bronze"));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = getIntent().getExtras();
-                Intent sendIntent = new Intent(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, url);
-                sendIntent.setType("text/plain");
-                // (Optional) Here we're setting the title of the content
-                sendIntent.putExtra(Intent.EXTRA_TITLE, title);
-                // Show the Sharesheet
-                startActivity(Intent.createChooser(sendIntent, null));
-            }
-        });
-
-        downloadButton = (Button) findViewById(R.id.button);
-        downloadButton.setEnabled(false);
-        context = this;
-        downloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // First, request permission (Android 6.0+ only)
@@ -108,7 +101,7 @@ public class MapDetailsActivity extends AppCompatActivity {
                             context, Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
                             PackageManager.PERMISSION_GRANTED) {
                         // You can use the API that requires the permission.
-                        beginDownload(download, title);
+                        beginDownload(url, title);
                     }
                     else {
                         // You can directly ask for the permission.
@@ -118,10 +111,12 @@ public class MapDetailsActivity extends AppCompatActivity {
                     }
                 }
                 else {
-                    beginDownload(download, title);
+                    beginDownload(url, title);
                 }
             }
         });
+
+        context = this;
 
         CollapsingToolbarLayout toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         ImageView image = (ImageView) findViewById(R.id.header_img);
@@ -135,71 +130,11 @@ public class MapDetailsActivity extends AppCompatActivity {
             Picasso.get().load(image_url).into(image);
         }
 
-        new DecodeGBXTask().execute(bundle.getString("cookie"), url);
-    }
+        textAuthor.setText(convertTime(score_author));
+        textGold.setText(convertTime(score_gold));
+        textSilver.setText(convertTime(score_silver));
+        textBronze.setText(convertTime(score_bronze));
 
-    public class DecodeGBXTask extends AsyncTask<String, Void, String> {
-
-        private static final String LOG_TAG = "DecodeGBXTask";
-
-        protected String doInBackground(String... params) {
-            log.d( "Starting task...");
-            log.d( "Cookie: " + params[0]);
-            OkHttpClient client = new OkHttpClient();
-            Request request = new Request.Builder()
-                    .addHeader("Cookie", params[0])
-                    .url(params[1])
-                    .build();
-
-            try (Response response = client.newCall(request).execute()) {
-
-                Document doc = Jsoup.parse(response.body().string());
-                download = doc.select(".btn-primary").attr("href");
-                log.d( download);
-
-                Request download_request = new Request.Builder().url(download).build();
-                Response download_response = client.newCall(download_request).execute();
-
-                InputStream is = download_response.body().byteStream();
-                byte[] buffer = new byte[1000];
-                is.read(buffer);
-                is.close();
-
-                String s = new String(buffer);
-
-                log.d( s);
-                return s;
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            downloadButton.setEnabled(true);
-
-            long time_bronze = scrapeMedal(s,"bronze");
-            String bronze = convertTime(time_bronze);
-            textBronze.setText(bronze);
-
-            long time_silver = scrapeMedal(s, "silver");
-            String silver = convertTime(time_silver);
-            textSilver.setText(silver);
-
-            long time_gold = scrapeMedal(s, "gold");
-            String gold = convertTime(time_gold);
-            textGold.setText(gold);
-
-            long time_author = scrapeMedal(s, "authortime");
-            String authortime = convertTime(time_author);
-            textAuthor.setText(authortime);
-        }
     }
 
     public String convertTime(long millis){
@@ -211,21 +146,9 @@ public class MapDetailsActivity extends AppCompatActivity {
         millis -= secondsMillis;
 
         String stringInterval = "%02d:%02d.%03d";
-        Log.d(DecodeGBXTask.LOG_TAG + " - Convert", String.format(stringInterval , mm, ss, millis));
         return String.format(stringInterval , mm, ss, millis);
     }
 
-    public long scrapeMedal(String file, String medal){
-        int start, end;
-        long time;
-        Log.d(DecodeGBXTask.LOG_TAG, "Scraping medal...");
-        String search = medal.concat("=\"");
-        start = file.indexOf(search) + search.length();
-        end = file.indexOf("\"", start);
-        time = Long.parseLong(file.substring(start, end));
-        Log.d(DecodeGBXTask.LOG_TAG + " - " + medal, Long.toString(time));
-        return time;
-    }
 
     private void beginDownload(String url, String title){
 
@@ -239,7 +162,7 @@ public class MapDetailsActivity extends AppCompatActivity {
 
         DownloadManager downloadManager= (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
         downloadID = downloadManager.enqueue(request);// enqueue puts the download request in the queue.
-        Snackbar.make(downloadButton, getString(R.string.download_progress), BaseTransientBottomBar.LENGTH_LONG).show();
+        Snackbar.make(textBronze, getString(R.string.download_progress), BaseTransientBottomBar.LENGTH_LONG).show();
         registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
     }
 
@@ -252,7 +175,7 @@ public class MapDetailsActivity extends AppCompatActivity {
 
             //Checking if the received broadcast is for our enqueued download by matching download id
             if (downloadID == id) {
-                Snackbar.make(downloadButton, getString(R.string.download_complete), BaseTransientBottomBar.LENGTH_LONG).show();
+                Snackbar.make(textBronze, getString(R.string.download_complete), BaseTransientBottomBar.LENGTH_LONG).show();
             }
 
         }
@@ -278,7 +201,7 @@ public class MapDetailsActivity extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     log.d( "Permission granted");
                     // permission was granted, yay!
-                    beginDownload(download, title);
+                    beginDownload(url, title);
 
                 } else {
 
