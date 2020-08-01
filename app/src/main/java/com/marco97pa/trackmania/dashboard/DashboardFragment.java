@@ -72,7 +72,6 @@ public class DashboardFragment extends Fragment {
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
-       //TODO: GET /api/token/leaderboard/group/groupId/map
         maps = new ArrayList<Map>();
         // Create adapter passing in the sample user data
         adapter = new MapAdapter(maps, getActivity());
@@ -101,7 +100,7 @@ public class DashboardFragment extends Fragment {
         }
         else{
             seasonNameText.setText(season.getName());
-            seasonDetailsText.setText(season.getRankings().toString());
+            seasonDetailsText.setText(season.getRankingsAsString());
             if(adapter.getItemCount() == 0) {
                 maps.clear();
                 maps.addAll(season.getMaps());
@@ -250,7 +249,6 @@ public class DashboardFragment extends Fragment {
             }
 
             //Get scores and rankings on every map of that season
-
             try {
                 Request request = new Request.Builder()
                         .url("https://live-services.trackmania.nadeo.live/api/token/leaderboard/group/" + seasonUid + "/map")
@@ -296,7 +294,7 @@ public class DashboardFragment extends Fragment {
             super.onPostExecute(season);
             //execution on main/UI thread
             seasonNameText.setText(season.getName());
-            seasonDetailsText.setText(season.getRankings().toString());
+            seasonDetailsText.setText(season.getRankingsAsString());
 
             maps.clear();
             ArrayList<String> params = new ArrayList<>();
@@ -327,7 +325,7 @@ public class DashboardFragment extends Fragment {
      */
     public class getMapsfromUID extends AsyncTask<ArrayList<String>, Integer, ArrayList<Map>> {
 
-        private static final String LOG_TAG = "getMapfromUID";
+        private static final String LOG_TAG = "getMapsfromUID";
         private FLog log = new FLog(LOG_TAG);
 
         private static final int RESPONSE_OK = 200;

@@ -39,6 +39,10 @@ public class Season {
         return rankings;
     }
 
+    public String getRankingsAsString() {
+        return rankings.toString().substring(1 , rankings.toString().length() - 1);
+    }
+
     public void setRankings(ArrayList<String> rankings) {
         this.rankings = rankings;
     }
@@ -49,14 +53,6 @@ public class Season {
             alluids = uid + "%";
         }
         return mapUIDs;
-    }
-
-    public String getAllMapUIDs() {
-        String alluids = "";
-        for (String uid: mapUIDs) {
-            alluids = alluids + uid + "%";
-        }
-        return alluids.substring(0, alluids.length() - 1);
     }
 
 
