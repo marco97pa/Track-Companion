@@ -58,13 +58,11 @@ public class PlayerFragment extends Fragment {
 
     private static final String LOG_TAG = "PlayerFragment";
     private FLog log = new FLog(LOG_TAG);
-    private String API;
+
     private Player player;
     private TextView nicknameText, zoneText;
     private TextView pointsText, t1Text, t2Text, t3Text, t4Text, t5Text, t6Text, t7Text, t8Text, t9Text;
-    private TextView APIverText;
-    private FirebaseRemoteConfig mFirebaseRemoteConfig;
-    int taps = 0;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -73,11 +71,6 @@ public class PlayerFragment extends Fragment {
 
         nicknameText = root.findViewById(R.id.name);
         zoneText = root.findViewById(R.id.zone);
-
-        TextView appVer = root.findViewById(R.id.app_ver);
-        appVer.setText(BuildConfig.VERSION_NAME);
-
-        APIverText = root.findViewById(R.id.api_ver);
 
         pointsText = root.findViewById(R.id.points);
         t1Text = root.findViewById(R.id.bronze1);
@@ -90,20 +83,6 @@ public class PlayerFragment extends Fragment {
         t8Text = root.findViewById(R.id.gold2);
         t9Text = root.findViewById(R.id.gold3);
 
-        LinearLayout bug = root.findViewById(R.id.report_bug);
-        bug.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                        "mailto","marco97pa@gmail.com", null));
-                emailIntent.putExtra(Intent.EXTRA_EMAIL, "[marco97pa@gmail.com]");
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
-                emailIntent.putExtra(Intent.EXTRA_TEXT, "I had a problem with " +
-                        getString(R.string.app_name) + ", version " +  BuildConfig.VERSION_NAME +
-                        ", API version " + API);
-                startActivity(Intent.createChooser(emailIntent, "Send email..."));
-            }
-        });
 
         MobileAds.initialize(getContext(), new OnInitializationCompleteListener() {
             @Override
@@ -113,42 +92,6 @@ public class PlayerFragment extends Fragment {
         AdView mAdView = root.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-
-        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(3600)
-                .build();
-        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
-        mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
-        mFirebaseRemoteConfig.fetchAndActivate()
-                .addOnCompleteListener(getActivity(), new OnCompleteListener<Boolean>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Boolean> task) {
-                        if (task.isSuccessful()) {
-                            boolean updated = task.getResult();
-                            log.d( "Config params updated: " + updated);
-                            checkSupportedApi();
-                        } else {
-                            log.d( "Config fetch failed");
-                        }
-                    }
-                });
-
-        //Sets version name easter egg
-        LinearLayout APPver = (LinearLayout) root.findViewById(R.id.app_ver_layout);
-        APPver.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                        if (taps == 7) {
-                            Toast.makeText(getActivity(), getString(R.string.easter_egg), Toast.LENGTH_LONG).show();
-                            watchYoutubeVideo(getActivity(), "X11cciTgwiM");
-                            taps = 0;
-                        }
-
-                        taps++;
-                    }
-                });
 
         return root;
     }
@@ -162,8 +105,6 @@ public class PlayerFragment extends Fragment {
                 ((MainActivity)getActivity()).getAuth().getUsername()
         );
 
-        API = ((MainActivity)getActivity()).getAuth().getAPIversion();
-        APIverText.setText(API);
         nicknameText.setText(player.getUsername());
         new getPlayerZoneTask().execute(
                 ((MainActivity)getActivity()).getAuth().getAccessToken(),
@@ -290,28 +231,5 @@ public class PlayerFragment extends Fragment {
     }
 
 
-        private void checkSupportedApi(){
-        String supported_api = mFirebaseRemoteConfig.getString("supported_api");
-        if(API != "" && API != null && supported_api != "none" && supported_api != "") {
-            log.d( "Supported API (from Firebase): " + supported_api);
-            log.d( "Actual API (from Ubisoft): " + API);
-            if (API.contains(supported_api)) {
-                APIverText.setTextColor(ContextCompat.getColor(getActivity(), R.color.green));
-                log.d( "API version supported");
-            } else {
-                Log.w(LOG_TAG, "API version unsupported");
-            }
-        }
-    }
 
-    private static void watchYoutubeVideo(Context context, String id) {
-        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
-        Intent webIntent = new Intent(Intent.ACTION_VIEW,
-                Uri.parse("http://www.youtube.com/watch?v=" + id));
-        try {
-            context.startActivity(appIntent);
-        } catch (ActivityNotFoundException ex) {
-            context.startActivity(webIntent);
-        }
-    }
 }
