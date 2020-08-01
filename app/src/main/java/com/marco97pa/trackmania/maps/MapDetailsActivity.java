@@ -60,6 +60,10 @@ public class MapDetailsActivity extends AppCompatActivity {
     private long downloadID;
     private Context context;
 
+    //TODO Build leaderboard
+    //Python: https://github.com/jonese1234/Trackmania-2020-Leaderboard-Scraper/blob/master/util/leaderboard.py
+    //Concept: https://github.com/The-Firexx/trackmania2020apidocumentation/blob/master/LiveServices.md#get-apitokenleaderboardgrouppersonal_bestmapmapidsurround11
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
