@@ -12,14 +12,18 @@ import okhttp3.Response;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -38,11 +42,7 @@ public class AuthActivity extends AppCompatActivity {
     private EditText emailTextView, passwordTextView;
     private Button logInButton;
     private ProgressBar loading;
-
-    //TUTTo questo in onstart
-    //TODO: Check if an old token exists https://gist.github.com/codecat/4dfd3719e1f8d9e5ef439d639abe0de4
-    //          if not expired > refresh token and save
-    //TODO: Add AUtologin check > Save user e password plain but don't show them when login
+    private CheckBox autologin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +53,7 @@ public class AuthActivity extends AppCompatActivity {
         passwordTextView = (EditText) findViewById(R.id.password);
         logInButton = (Button) findViewById(R.id.login);
         loading = (ProgressBar) findViewById(R.id.loading);
+        autologin = (CheckBox) findViewById(R.id.autologin);
 
         logInButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,6 +70,18 @@ public class AuthActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(isNetworkConnected()) {
+            restoreAuth();
+        }
+        else{
+            hideKeybaord(logInButton);
+            Snackbar.make(logInButton, getString(R.string.no_network), BaseTransientBottomBar.LENGTH_LONG).show();
+        }
     }
 
     public class AuthenticationTask extends AsyncTask<String, Void, Auth> {
@@ -149,6 +162,10 @@ public class AuthActivity extends AppCompatActivity {
                         log.d("refreshToken: " + refreshToken);
 
                         auth = new Auth(accessToken, refreshToken);
+                        saveAuth(auth);
+                        if(autologin.isChecked()) {
+                            saveCredentials(username, password);
+                        }
                     }
                 } catch (IOException | JSONException e) {
                     e.printStackTrace();
@@ -190,6 +207,53 @@ public class AuthActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    private void saveAuth(Auth auth){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("accessToken", auth.getAccessToken());
+        editor.putString("refreshToken", auth.getRefreshToken());
+        editor.apply();
+    }
+
+    private void restoreAuth(){
+        boolean tokenStillValid = false;
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        //Try to recover the last session, if it is still valid
+        String accessToken = preferences.getString("accessToken", "");
+        String refreshToken = preferences.getString("refreshToken", "");
+        if(accessToken != ""){
+            Auth auth = new Auth(accessToken, refreshToken);
+            if(!auth.isExpired()){
+                tokenStillValid = true;
+                //Launch MAIN ACTIVITY passing tokens
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra("accessToken", auth.getAccessToken());
+                intent.putExtra("refreshToken", auth.getRefreshToken());
+                startActivity(intent);
+            }
+        }
+        //If token is invalid and user has auto-login enabled, restore his credentials and login
+        if(!tokenStillValid) {
+            Boolean autologinEnabled = preferences.getBoolean("autologin", false);
+            String username = preferences.getString("username", "");
+            String password = preferences.getString("password", "");
+            if (autologinEnabled) {
+                if (username != "" && password != "") {
+                    new AuthenticationTask().execute(username, password);
+                }
+            }
+        }
+    }
+
+    private void saveCredentials(String username, String password){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("autologin", true);
+        editor.putString("username", username);
+        editor.putString("password", password);
+        editor.apply();
     }
 
     private void hideKeybaord(View v) {

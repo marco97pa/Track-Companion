@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Track Companion</string>
-    <string name="title_more">Altro</string>
+    <string name="title_more">Opzioni</string>
     <string name="title_dashboard">Stagione</string>
     <string name="title_player">Profilo</string>
     <string name="title_activity_map_details">Dettagli tracciato</string>
@@ -15,13 +15,9 @@
     <string name="no_network">Nessuna connessione a Internet disponibile</string>
     <string name="log_in_success">Log in completato!</string>
     <string name="api_version">Versione API</string>
-    <string name="no_maps_data">Non hai ancora realizzato nessun tracciato</string>
-    <string name="error_network">Errore di rete</string>
-    <string name="beta_description">Questa app è attualmente in fase beta. Altre informazioni come i record sulle piste, le statistiche, i club e i trofei saranno disponibili nei prossimi mesi. Al momento questi dati non sono pubblici. Sto lavorando su nuove funzionalità, quindi resta aggiornato sulle nuove versioni dell\'app e segnala i bug che dovessi incontrare dalla sezione Profilo. Grazie per utilizzare questa app.</string>
-    <string name="beta_title">Nuove funzionalità presto in arrivo!</string>
-    <string name="easter_egg">Hai trovato l\'easter egg!</string>
+    <string name="api_details">Ringrazio u/TheFirex per l\'incredibile aiuto nel reverse engineering delle API di Trackmania: la documentazione da lui realizzata è su Github</string>
     <string name="download">Download</string>
-    <string name="download_progress">Download tracciato in corso...</string>
+    <string name="download_progress">Download tracciato in corso…</string>
     <string name="download_complete">Download completato!</string>
     <string name="marshmallow_alert">Non hai concesso il permesso al salvataggio dei tracciati nella memoria!</string>
     <string name="prompt_email">Email</string>
@@ -33,4 +29,18 @@
     <string name="points">Punti:</string>
     <string name="loading">Caricamento...</string>
     <string name="loading_d">Sto recuperando i dati dai server...</string>
+    <string name="contribute">Come contribuire a questa app:</string>
+    <string name="ad_button">Supporta lo sviluppo (guarda un ad)</string>
+    <string name="share_button">Condividi l\'app con i tuoi amici</string>
+    <string name="github">Github</string>
+    <string name="share_message">Se sei un fan di Trackmania, non puoi non avere la companion app per Android. Scaricala gratis:</string>
+    <string name="error_network">Errore di rete</string>
+    <string name="beta_description">Questa app è attualmente in fase beta: altre funzioni come le classifiche, statistiche e i club verranno aggiunte nei prossimi mesi.</string>
+    <string name="beta_title">Nuove funzionalità presto in arrivo!</string>
+    <string name="easter_egg">Hai trovato l\'easter egg!</string>
+    <string name="session_expired">Sessione scaduta</string>
+    <string name="relogin_needed">È necessario effettuare nuovamente l\'accesso</string>
+    <string name="logout">Logout</string>
+    <string name="autologin">Accesso automatico</string>
+    <string name="retry">Riprova tra qualche istante</string>
 </resources>

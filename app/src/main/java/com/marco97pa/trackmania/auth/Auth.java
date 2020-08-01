@@ -3,6 +3,8 @@ package com.marco97pa.trackmania.auth;
 import com.auth0.android.jwt.Claim;
 import com.auth0.android.jwt.JWT;
 
+import java.util.Date;
+
 
 public class Auth {
     private String accessToken;
@@ -25,7 +27,14 @@ public class Auth {
     }
 
     public boolean isExpired() {
-        return jwt.isExpired(10); // 10 seconds leeway
+        return jwt.isExpired(1); // 1 second leeway
+    }
+
+    public long getExpireTime(){
+        Date expires_at = jwt.getExpiresAt();
+        Date now = new Date();
+        long diffInMillis = expires_at.getTime() - now.getTime();
+        return diffInMillis;
     }
 
     public String getUsername(){
