@@ -11,3 +11,6 @@ You can access all your Trackmania statistics and game data wherever you are:
 
 # Contribute
 You can make a new branch and add a feature. You can also add new UI elements or fragments if your new feature is not correlate to existing Fragments or UI elements 
+
+# Thanks to
+This project is partially based on the work of @The-Firexx and his [Trackmania API Documentation](https://github.com/The-Firexx/trackmania2020apidocumentation)
