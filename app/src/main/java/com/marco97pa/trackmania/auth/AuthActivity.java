@@ -37,6 +37,11 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+/*
+    AUTH ACTIVITY
+    This activity provides an UI to insert username and password to login to UPlay
+ */
+
 public class AuthActivity extends AppCompatActivity {
 
     private EditText emailTextView, passwordTextView;
@@ -84,6 +89,11 @@ public class AuthActivity extends AppCompatActivity {
         }
     }
 
+    /*
+        AuthenticationTask
+        Asynctask to Log in to Uplay and Trackmania using the provided username and password
+        @see https://github.com/The-Firexx/trackmania2020apidocumentation/blob/master/Login.md
+     */
     public class AuthenticationTask extends AsyncTask<String, Void, Auth> {
 
         private static final String LOG_TAG = "AuthenticationTask";
@@ -209,6 +219,10 @@ public class AuthActivity extends AppCompatActivity {
 
     }
 
+    /*
+        SAVEAUTH
+        Save the Auth object so it can be retrieved without making again the login process (or AuthenticationTask)
+     */
     private void saveAuth(Auth auth){
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
@@ -217,6 +231,10 @@ public class AuthActivity extends AppCompatActivity {
         editor.apply();
     }
 
+    /*
+        RESTOREAUTH
+        Restore the Auth object so it can be retrieved without making again the login process (or AuthenticationTask)
+     */
     private void restoreAuth(){
         boolean tokenStillValid = false;
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -247,6 +265,10 @@ public class AuthActivity extends AppCompatActivity {
         }
     }
 
+    /*
+        SAVECREDENTIALS
+        Save username and password so the login is automatic next time
+     */
     private void saveCredentials(String username, String password){
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
@@ -256,11 +278,19 @@ public class AuthActivity extends AppCompatActivity {
         editor.apply();
     }
 
+    /*
+        hideKeybaord
+        Simple method to hide the keyboard
+     */
     private void hideKeybaord(View v) {
         InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(v.getApplicationWindowToken(),0);
     }
 
+    /*
+        isNetworkConnected
+        Simple method to check if the device is connected to a network
+     */
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();

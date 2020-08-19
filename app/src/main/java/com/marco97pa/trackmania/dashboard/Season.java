@@ -3,8 +3,11 @@ package com.marco97pa.trackmania.dashboard;
 import com.marco97pa.trackmania.maps.Map;
 
 import java.util.ArrayList;
-import java.util.List;
 
+/*
+    Season
+    A season is an in-game collection of maps. It is defined by a uid, a name, its rankings and maps
+ */
 public class Season {
     private String uid;
     private String name;

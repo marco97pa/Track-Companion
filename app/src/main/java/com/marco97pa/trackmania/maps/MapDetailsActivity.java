@@ -46,6 +46,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
+/*
+    Activity that shows more information about the Map.
+    It gets information passed from bundle
+ */
 public class MapDetailsActivity extends AppCompatActivity {
 
     private static final int STORAGE_PERMISSION_DOWNLOAD = 8000;

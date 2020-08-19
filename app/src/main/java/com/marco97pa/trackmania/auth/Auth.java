@@ -5,6 +5,14 @@ import com.auth0.android.jwt.JWT;
 
 import java.util.Date;
 
+/*  AUTH CLASS
+    Collects all the authentication info such as:
+    - String accessToken: access token, used to authenticate with the game APIs
+    - String refreshToken: refresh token, used to renew the access token when it expires
+    @see https://github.com/The-Firexx/trackmania2020apidocumentation/blob/master/Login.md
+    - JWT jwt: contains the JWT informations of authentication
+    @see https://jwt.io/
+ */
 
 public class Auth {
     private String accessToken;

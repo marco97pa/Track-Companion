@@ -54,6 +54,9 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.concurrent.ExecutionException;
 
+/*
+    Fragment that shows details about the user and his trophies
+ */
 public class PlayerFragment extends Fragment {
 
     private static final String LOG_TAG = "PlayerFragment";

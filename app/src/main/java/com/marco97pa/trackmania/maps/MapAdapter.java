@@ -17,7 +17,9 @@ import java.util.List;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-
+/*
+    Adapter of an ArrayList of Maps into a RecyclerView
+ */
 public class MapAdapter extends RecyclerView.Adapter<MapAdapter.ViewHolder> {
 
     private static final String LOG_TAG = "MapAdapter";

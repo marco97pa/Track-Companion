@@ -1,5 +1,12 @@
 package com.marco97pa.trackmania.player;
 
+/*
+    Throphy object, as defined by developers of Trackmania
+    - String accountID: ID of the account this object belongs
+    - int points: points of the player
+    - int t1Count ... t9Count: number of trophies of each type
+    - String timestamp: timestamp of the request
+ */
 public class Trophy {
     private String accountId;
     private int points;

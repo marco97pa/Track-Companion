@@ -41,6 +41,11 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+/*
+    DashboardFragment
+    Shows the active season and its details
+ */
+
 public class DashboardFragment extends Fragment {
 
     private static final String LOG_TAG = "DashboardFragment";

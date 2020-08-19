@@ -10,6 +10,11 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 
+/*
+    Zone
+    a Zone of the World in the game
+ */
+
 public class Zone {
 
     private String icon;

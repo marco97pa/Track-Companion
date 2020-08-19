@@ -1,8 +1,18 @@
 package com.marco97pa.trackmania.maps;
 
-import android.util.Log;
-
-import com.marco97pa.trackmania.utils.FLog;
+/*
+    MAP
+    A map (or track) is an in-game circuit.
+    It is defined by:
+    - String id
+    - String Uid
+    - String name, the name of the track
+    - String thumbnailUrl, an URl that points to a JPG image of the track
+    - String fileURL, an URL that points to the download link of the track
+    - String timestamp, time when the track was created
+    - String author, who created the track
+    - String bronzeScore, silverScore, goldScore, authorScore, scores of each medal
+ */
 
 public class Map {
     private String mapUid;

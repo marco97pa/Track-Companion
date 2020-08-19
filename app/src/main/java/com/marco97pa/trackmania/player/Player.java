@@ -2,6 +2,15 @@ package com.marco97pa.trackmania.player;
 
 import android.content.Context;
 
+/*
+* Player
+* a player in the game. Defined by:
+* - String accountID: unique account ID
+* - String username: his username
+* - String zoneID: his (smallest) zoneID
+* - String zone: his zone
+* */
+
 public class Player {
     private String accountID;
     private String username;
