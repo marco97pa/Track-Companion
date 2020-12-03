@@ -1,6 +1,7 @@
 # Track-Companion
 A Trackmania companion app for Android
-You can download it for free on [Google Play Store](https://play.google.com/store/apps/details?id=com.marco97pa.trackmania)
+The app is no longer available on [Google Play Store](https://play.google.com/store/apps/details?id=com.marco97pa.trackmania), as I don't have time to develop more features.
+The repository is still available to anyone who want to contribute.
 
 Unofficial Android companion app for the new Trackmania, released in 2020 by Ubisoft and Nadeo.
 You can access all your Trackmania statistics and game data wherever you are:
